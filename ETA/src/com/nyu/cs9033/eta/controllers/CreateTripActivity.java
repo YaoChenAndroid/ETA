@@ -1,30 +1,30 @@
 package com.nyu.cs9033.eta.controllers;
 
-import java.util.List;
 
 import com.nyu.cs9033.eta.models.Trip;
+
 import DatabaseHelper.TripDatabaseHelper;
+
 import com.nyu.cs9033.eta.R;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.TimePicker;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.widget.EditText;
-
 import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 
 public class CreateTripActivity extends Activity {
-
+	private final static String TAG = "CreateTripActivity";
 	private final int REQUEST_CONTACT = 1;
 	
 	private Animation shakeAction;
@@ -101,7 +101,7 @@ public class CreateTripActivity extends Activity {
 				cancelTripCreation();
 			}
 		});
-		
+		Log.i(TAG, "successful!");
 		
 	}
 	//deal the information from the contact book
@@ -257,6 +257,16 @@ public class CreateTripActivity extends Activity {
             ((EditText) view).setError(error[0]);
         }
     }
-
+    //check whether can access network.
+    private void IsNetworkConnect()
+    {
+    	ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+    	if(networkInfo != null && networkInfo.isConnected()){
+    		
+    	}else{
+    		
+    	}
+    }
   
 }

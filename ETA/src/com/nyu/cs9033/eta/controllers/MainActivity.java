@@ -73,25 +73,5 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 	}
 
-	/**
-	 * This method should be called when
-	 * a Trip is returned to the main
-	 * activity. Remember that the Trip
-	 * will not be returned as a Trip object;
-	 * it will be in some persisted form. The
-	 * method that calls onReceivedTrip should
-	 * extract a Trip object from however it
-	 * receives it, and pass that object to 
-	 * onReceivedTrip.
-	 * 
-	 * @param trip The Trip that
-	 * has been created in the trip creator
-	 * Activity.
-	 */
-	//record the trip information in member parameter
-//	public void onReceivedTrip(Trip trip) {
-//		
-//		// TODO - fill in here
-//		m_trip = new Trip(trip.GetTime(),trip.GetData(),trip.GetAddress(),trip.GetPartici());
-//	}
+	
 }

@@ -2,9 +2,10 @@ package com.nyu.cs9033.eta.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 public class Trip implements Parcelable {
-
+	private final static String TAG = "Trip";
 	public static final Parcelable.Creator<Trip> CREATOR = new Parcelable.Creator<Trip>() {
 		public Trip createFromParcel(Parcel p) {
 			return new Trip(p);
@@ -71,6 +72,7 @@ public class Trip implements Parcelable {
 		m_data = p.readString();
 		m_address = p.readString();
 		m_participant = p.readString();
+		Log.i(TAG, "successful!");
 	}
 	public Trip()
 	{}

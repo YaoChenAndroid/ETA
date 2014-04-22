@@ -1,7 +1,6 @@
 package com.nyu.cs9033.eta.controllers;
 
 import com.nyu.cs9033.eta.models.Trip;
-
 import com.nyu.cs9033.eta.R;
 
 import android.app.Activity;
@@ -9,13 +8,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 public class ViewTripActivity extends Activity {
 
-
+	private final static String TAG = "ViewTripActivity";
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,6 +64,7 @@ public class ViewTripActivity extends Activity {
 			}
 			
 		}
+		Log.i(TAG, "successful!");
 	}
 
 	/**

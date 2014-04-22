@@ -2,9 +2,10 @@ package com.nyu.cs9033.eta.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 public class Person implements Parcelable {
-	
+	private final static String TAG = "Person";
 	public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() {
 		public Person createFromParcel(Parcel p) {
 			return new Person(p);
@@ -24,6 +25,7 @@ public class Person implements Parcelable {
 	public Person(Parcel p) {
 		
 		// TODO - fill in here
+		Log.i(TAG, "successful!");
 	}
 	
 	/**

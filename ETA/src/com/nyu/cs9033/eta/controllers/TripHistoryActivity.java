@@ -1,6 +1,5 @@
 package com.nyu.cs9033.eta.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import DatabaseHelper.TripDatabaseHelper;
@@ -9,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -23,6 +23,7 @@ import com.nyu.cs9033.eta.models.Trip;
 public class TripHistoryActivity extends Activity{
 //func: click on the trip within the list, view the trip details withn the ViewTripActivity
 //extra:show trips pasted, upcoming trips, trips occuring right now.
+	private final static String TAG = "TripHistoryActivity";
 	private  List<Trip> tripList;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -93,6 +94,7 @@ public class TripHistoryActivity extends Activity{
 			.show();
 
 		}
+		Log.i(TAG, "successful!");
 	}
 	//Start the ViewTripActivity to show the detail information of the selected trip
 	private void ViewTrip(int arg) {
