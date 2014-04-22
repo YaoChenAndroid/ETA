@@ -1,5 +1,6 @@
 package com.nyu.cs9033.eta.controllers;
 import DatabaseHelper.TripDatabaseHelper; 
+
 import com.nyu.cs9033.eta.models.Trip;
 import com.nyu.cs9033.eta.R;
 
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 public class MainActivity extends Activity {
+	private final static String TAG = "MainActivity";
 	private Trip m_trip;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
