@@ -1,10 +1,19 @@
 package com.nyu.cs9033.eta.controllers;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import DatabaseHelper.TripDatabaseHelper; 
 
@@ -12,6 +21,7 @@ import com.nyu.cs9033.eta.R;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -22,11 +32,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import JsonServer.tripStatus;
 
 public class MainActivity extends Activity {
 	private final static String TAG = "MainActivity";
-	//private Trip m_trip;
+	private List<Map<String, String>> data;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,41 +63,16 @@ public class MainActivity extends Activity {
 		TripDatabaseHelper dbHelper = new TripDatabaseHelper(this);
     	if(this.IsNetworkConnect())
     	{
-    		String res;
-			try {
-				res = new tripStatus().execute("3645686546").get();
-	    		
-	    		String[] source = res.split("\":");
-	    		String[] friends = getResArray(source[3]);
-	    		String[] distance = getResArray(source[1]);
-	    		String[] time = getResArray(source[2]);
-	    		int nLen = time.length;
 
-	    		String temp;
-	    		List<Map<String, String>> data = new ArrayList<Map<String, String>>();
-	    		for(int i = 0; i < nLen; i++) {
-	    		    Map<String, String> datum = new HashMap<String, String>(2);
-	    		    datum.put("title", friends[i]);
-	    		    temp = "distance_left: " + distance[i] + "\ntime_left: " + time[i] + "\n";
-	    		    datum.put("date", temp);
-	    		    data.add(datum);
-	    		}
-	    		
-	    		ListView listV = (ListView)findViewById(R.id.listViewCurTrip);
-	    		SimpleAdapter adapter = new SimpleAdapter(this, data,
-                        android.R.layout.simple_list_item_2,
-                        new String[] {"title", "date"},
-                        new int[] {android.R.id.text1,
-                                   android.R.id.text2});
-	    		listV.setAdapter(adapter);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			ListView listV = (ListView)findViewById(R.id.listViewCurTrip);			
+			new tripStatus().execute("3645686546");
+			data = new ArrayList<Map<String, String>>();
+			SimpleAdapter adapter = new SimpleAdapter(this, data,
+	                android.R.layout.simple_list_item_2,
+	                new String[] {"title", "date"},
+	                new int[] {android.R.id.text1,
+	                           android.R.id.text2});
+			listV.setAdapter(adapter);
     	}
     	else
     	{
@@ -101,12 +85,7 @@ public class MainActivity extends Activity {
 	 * which can be viewed in the ViewTripActivity.
 	 */
 	
-	
-	private String[] getResArray(String source) {
-		// TODO Auto-generated method stub
-		String temp = source.substring(2,source.indexOf("]"));
-		return temp.split(",");
-	}
+
 	/**
 	 * This method should start the
 	 * Activity responsible for creating
@@ -146,5 +125,138 @@ public class MainActivity extends Activity {
     		return false;
     	}
     }
-	
+    public class tripStatus extends AsyncTask<String, Void, String>{
+
+    	private final static String TAG = "jsonData";
+
+        private HttpURLConnection BuildConenction()
+        {
+        	String http = "http://cs9033-homework.appspot.com/";  
+        	//String http = "http://www.baidu.com/";
+
+        	HttpURLConnection conn=null;  
+        	try {  
+
+
+        	    URL url = new URL(http);  
+        	    conn = (HttpURLConnection) url.openConnection();
+        	    
+        	    conn.setReadTimeout( 10000 /*milliseconds*/ );
+        	    conn.setConnectTimeout( 15000 /* milliseconds */ );
+        	    conn.setRequestMethod("POST");
+        	    conn.setDoInput(true);
+        	    conn.setDoOutput(true);
+        	    //conn.setFixedLengthStreamingMode(message.getBytes().length);
+
+        	    //make some HTTP header nicety
+        	    conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+        	    conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+
+        	    //open
+        	    Log.e(TAG, "open connection_yao");
+        	    conn.connect();
+        	    
+
+        	} 
+        	catch (MalformedURLException e) {  
+
+                Log.e(TAG, e.getMessage());
+        	}  
+        	catch (IOException e) {  
+    	
+        		Log.e(TAG, e.getMessage());  
+    	       } 
+        	catch(Exception e)
+        	{
+        		Log.e(TAG, "connect error in " + TAG);
+        		Log.e(TAG, e.getMessage());
+
+        	}
+
+    		return conn;
+        }
+        private String ReadTripInfo(HttpURLConnection urlConnection,String tripID)
+        {
+        	try
+        	{
+        	    //Create JSONObject here
+        	    JSONObject jsonParam = new JSONObject();
+        	    jsonParam.put("command", "TRIP_STATUS");
+        	    jsonParam.put("trip_id", tripID);
+        	    OutputStreamWriter out = new   OutputStreamWriter(urlConnection.getOutputStream());
+        	    out.write(jsonParam.toString());
+        	    out.close();  
+
+        	    int HttpResult =urlConnection.getResponseCode();  
+        	    if(HttpResult ==HttpURLConnection.HTTP_OK){  
+        	        BufferedReader br = new BufferedReader(new InputStreamReader(  
+        	            urlConnection.getInputStream(),"utf-8"));  
+        	    String line = null;  
+        	    
+                if((line = br.readLine()) != null)
+                	{
+                		br.close(); 
+                		return line;
+                	}
+
+        	    }else{  
+        	    	Log.i(TAG, urlConnection.getResponseMessage());
+        	    	return "";
+        	    }  
+        	}    	
+        	catch (JSONException e) {
+     	       // TODO Auto-generated catch block
+        		Log.e(TAG, e.getMessage());
+         	} catch (IOException e) {
+    			// TODO Auto-generated catch block
+        		Log.e(TAG, e.getMessage());
+        		
+    		}
+        	finally{  
+     	       if(urlConnection!=null)  
+     	    	   urlConnection.disconnect();  
+     	   }
+        	return "";
+        }
+
+
+
+    	@Override
+    	protected String doInBackground(String... urls) {
+    		return download(urls[0]);
+
+    	}
+    	private String download(String tripID) {
+    		// TODO Auto-generated method stub
+    		HttpURLConnection urlConnection = BuildConenction();
+    		return ReadTripInfo(urlConnection,tripID);
+
+    	}
+    	protected void onPostExecute (String res)
+    	{
+    		String[] source = res.split("\":");
+    		String[] friends = getResArray(source[3]);
+    		String[] distance = getResArray(source[1]);
+    		String[] time = getResArray(source[2]);
+    		int nLen = time.length;
+    		String temp;
+    		
+    		
+    		for(int i = 0; i < nLen; i++) {
+    		    Map<String, String> datum = new HashMap<String, String>(2);
+    		    datum.put("title", friends[i]);
+    		    temp = "distance_left: " + distance[i] + "\ntime_left: " + time[i] + "\n";
+    		    datum.put("date", temp);
+    		    data.add(datum);
+    		}
+    		
+
+    	}
+    	
+    	private String[] getResArray(String source) {
+    		// TODO Auto-generated method stub
+    		String temp = source.substring(2,source.indexOf("]"));
+    		return temp.split(",");
+    	}
+    }
 }

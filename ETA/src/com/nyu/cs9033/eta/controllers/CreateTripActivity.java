@@ -8,6 +8,8 @@ import DatabaseHelper.TripDatabaseHelper;
 import com.nyu.cs9033.eta.R;
 
 import android.app.Activity;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.widget.EditText;
@@ -261,6 +264,17 @@ public class CreateTripActivity extends Activity {
             ((EditText) view).setError(error[0]);
         }
     }
+    //check whether can access network.
+    private boolean IsNetworkConnect()
+    {
+    	ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
+    	if(networkInfo != null && networkInfo.isConnected()){
+    		return true;
+    	}else{
+    		return false;
+    	}
+    }
   
 }
