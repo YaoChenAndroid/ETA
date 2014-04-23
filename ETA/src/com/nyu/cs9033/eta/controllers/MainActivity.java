@@ -63,11 +63,7 @@ public class MainActivity extends Activity {
 	    		String[] distance = getResArray(source[1]);
 	    		String[] time = getResArray(source[2]);
 	    		int nLen = time.length;
-//	    		String[] others = new String[nLen];
-//	    		for(int i = 0; i < nLen; i++)
-//	    		{
-////	    			others[i] = "distance_left: " + distance[i] + "\n time_left: " + time[i] + "\n";
-//	    		}
+
 	    		String temp;
 	    		List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 	    		for(int i = 0; i < nLen; i++) {
@@ -79,16 +75,12 @@ public class MainActivity extends Activity {
 	    		}
 	    		
 	    		ListView listV = (ListView)findViewById(R.id.listViewCurTrip);
-//				listV.setAdapter(new ArrayAdapter<String>(this,
-//						android.R.layout.simple_expandable_list_item_1, friends));
 	    		SimpleAdapter adapter = new SimpleAdapter(this, data,
                         android.R.layout.simple_list_item_2,
                         new String[] {"title", "date"},
                         new int[] {android.R.id.text1,
                                    android.R.id.text2});
 	    		listV.setAdapter(adapter);
-//				listV.setAdapter(new ArrayAdapter<String>(this,
-//						android.R.layout.simple_expandable_list_item_2, new String[] { "CHILD_NAME", "CHILD_NAME" }));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
