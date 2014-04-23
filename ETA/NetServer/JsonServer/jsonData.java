@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,14 +71,14 @@ public class jsonData extends AsyncTask<String, Void, String>{
 
 		return conn;
     }
-    private void ReadTripInfo(HttpURLConnection urlConnection)
+    private String ReadTripInfo(HttpURLConnection urlConnection,String tripID)
     {
     	try
     	{
     	    //Create JSONObject here
     	    JSONObject jsonParam = new JSONObject();
     	    jsonParam.put("command", "TRIP_STATUS");
-    	    jsonParam.put("trip_id", "3645686546}");
+    	    jsonParam.put("trip_id", tripID);
     	    OutputStreamWriter out = new   OutputStreamWriter(urlConnection.getOutputStream());
     	    out.write(jsonParam.toString());
     	    out.close();  
@@ -86,25 +87,20 @@ public class jsonData extends AsyncTask<String, Void, String>{
     	    if(HttpResult ==HttpURLConnection.HTTP_OK){  
     	        BufferedReader br = new BufferedReader(new InputStreamReader(  
     	            urlConnection.getInputStream(),"utf-8"));  
-    	        String line = null;  
-    	        StringBuilder sb = new StringBuilder();  
-    	        while ((line = br.readLine()) != null) {  
-    	            sb.append(line + "\n");  
-    	        }  
-    	        br.close();  
-    	        Log.i(TAG, sb.toString());
-
+    	        return formatResult(br);
     	    }else{  
     	    	Log.i(TAG, urlConnection.getResponseMessage());
+    	    	return "";
     	    }  
     	}    	
     	catch (JSONException e) {
  	       // TODO Auto-generated catch block
     		Log.e(TAG, e.getMessage());
+    		return "";
      	} catch (IOException e) {
 			// TODO Auto-generated catch block
-
     		Log.e(TAG, e.getMessage());
+    		return "";
 		}
     	finally{  
  	       if(urlConnection!=null)  
@@ -112,15 +108,38 @@ public class jsonData extends AsyncTask<String, Void, String>{
  	   }
     }
 
+	private String formatResult(BufferedReader br) {
+		// TODO Auto-generated method stub
+        String line = null;  
+        StringBuilder sb = new StringBuilder(); 
+        
+        try {
+        	String[] distance = null, time = null, friends = null;
+
+        	if((line = br.readLine()) != null)
+        	{
+        		br.close(); 
+        		return line;
+        	}
+
+	         
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+
+		return "";
+	}
+
 	@Override
 	protected String doInBackground(String... urls) {
 		return download(urls[0]);
 
 	}
-	private String download(String string) {
+	private String download(String tripID) {
 		// TODO Auto-generated method stub
 		HttpURLConnection urlConnection = BuildConenction();
-		ReadTripInfo(urlConnection);
-		return null;
+		return ReadTripInfo(urlConnection,tripID);
+
 	}
 }

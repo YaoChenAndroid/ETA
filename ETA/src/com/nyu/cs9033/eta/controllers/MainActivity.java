@@ -1,5 +1,10 @@
 package com.nyu.cs9033.eta.controllers;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import DatabaseHelper.TripDatabaseHelper; 
 
@@ -13,7 +18,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import JsonServer.jsonData;
 
 public class MainActivity extends Activity {
@@ -46,14 +54,55 @@ public class MainActivity extends Activity {
 		TripDatabaseHelper dbHelper = new TripDatabaseHelper(this);
     	if(this.IsNetworkConnect())
     	{
-    		new jsonData().execute("");
+    		String res;
+			try {
+				res = new jsonData().execute("3645686546").get();
+	    		
+	    		String[] source = res.split("\":");
+	    		String[] friends = getResArray(source[3]);
+	    		String[] distance = getResArray(source[1]);
+	    		String[] time = getResArray(source[2]);
+	    		int nLen = time.length;
+//	    		String[] others = new String[nLen];
+//	    		for(int i = 0; i < nLen; i++)
+//	    		{
+////	    			others[i] = "distance_left: " + distance[i] + "\n time_left: " + time[i] + "\n";
+//	    		}
+	    		String temp;
+	    		List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+	    		for(int i = 0; i < nLen; i++) {
+	    		    Map<String, String> datum = new HashMap<String, String>(2);
+	    		    datum.put("title", friends[i]);
+	    		    temp = "distance_left: " + distance[i] + "\ntime_left: " + time[i] + "\n";
+	    		    datum.put("date", temp);
+	    		    data.add(datum);
+	    		}
+	    		
+	    		ListView listV = (ListView)findViewById(R.id.listViewCurTrip);
+//				listV.setAdapter(new ArrayAdapter<String>(this,
+//						android.R.layout.simple_expandable_list_item_1, friends));
+	    		SimpleAdapter adapter = new SimpleAdapter(this, data,
+                        android.R.layout.simple_list_item_2,
+                        new String[] {"title", "date"},
+                        new int[] {android.R.id.text1,
+                                   android.R.id.text2});
+	    		listV.setAdapter(adapter);
+//				listV.setAdapter(new ArrayAdapter<String>(this,
+//						android.R.layout.simple_expandable_list_item_2, new String[] { "CHILD_NAME", "CHILD_NAME" }));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
     	}
     	else
     	{
     		Log.e(TAG, "No netWork");
     	}
 	}
-
 	/**
 	 * Receive result from CreateTripActivity here.
 	 * Can be used to save instance of Trip object
@@ -61,6 +110,11 @@ public class MainActivity extends Activity {
 	 */
 	
 	
+	private String[] getResArray(String source) {
+		// TODO Auto-generated method stub
+		String temp = source.substring(2,source.indexOf("]"));
+		return temp.split(",");
+	}
 	/**
 	 * This method should start the
 	 * Activity responsible for creating
