@@ -21,6 +21,7 @@ public class Trip implements Parcelable {
 	private String m_data;
 	private String m_participant;
 	private String m_tripName;
+	private int m_WebID;
 	/**
 	 * Create a Trip model object from a Parcel
 	 * 
@@ -63,6 +64,12 @@ public class Trip implements Parcelable {
 	{
 		m_tripName = name;
 	}
+	public int GetWEBID()
+	{
+		return m_WebID;
+	}
+	public void SetWebID(int ID)
+	{	m_WebID = ID; }
 	public Trip(Parcel p) {
 
 		// TODO - fill in here
@@ -72,6 +79,7 @@ public class Trip implements Parcelable {
 		m_data = p.readString();
 		m_address = p.readString();
 		m_participant = p.readString();
+		m_WebID = p.readInt();
 		Log.i(TAG, "successful!");
 	}
 	public Trip()
@@ -102,6 +110,7 @@ public class Trip implements Parcelable {
 		arg0.writeString(m_data);
 		arg0.writeString(m_address);
 		arg0.writeString(m_participant);
+		arg0.writeInt(m_WebID);
 	}
 	
 	/**

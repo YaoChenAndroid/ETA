@@ -1,26 +1,20 @@
 package JsonServer;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class jsonData extends AsyncTask<String, Void, String>{
+public class tripStatus extends AsyncTask<String, Void, String>{
 
 	private final static String TAG = "jsonData";
 
@@ -110,12 +104,10 @@ public class jsonData extends AsyncTask<String, Void, String>{
 
 	private String formatResult(BufferedReader br) {
 		// TODO Auto-generated method stub
-        String line = null;  
-        StringBuilder sb = new StringBuilder(); 
+        
         
         try {
-        	String[] distance = null, time = null, friends = null;
-
+        	String line = null;  
         	if((line = br.readLine()) != null)
         	{
         		br.close(); 

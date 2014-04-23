@@ -81,11 +81,15 @@ public class CreateTripActivity extends Activity {
 				if(valid())
 				{
 					Trip temp = createTrip();
-					saveTrip(temp);
+					int ID = saveToWeb(temp);
+					temp.SetWebID(ID);
+					saveTrip(temp);					
 					returnToMain();
 					///persistTrip(temp);
 				}				
 			}
+
+
 
 
 		});
@@ -147,8 +151,11 @@ public class CreateTripActivity extends Activity {
 		Trip temp = new Trip(tripName.getText().toString(), tripTime.getText().toString(), tripData.getText().toString(), tripAddress.getText().toString(), participants.getText().toString());
 		return temp;
 	}
-
-	    
+	//save the trip information to the web server
+	private int saveToWeb(Trip temp) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	 //function: store a trip into the database
 	private void saveTrip(Trip temp) {
 		// TODO Auto-generated method stub

@@ -24,7 +24,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 	private static final String COL_TRIP_LOCATION = "location";
 	private static final String COL_TRIP_PARTICIPANTS = "participants";
 	private static final String COL_TRIP_NAME = "name";
-	
+	private static final String COL_TRIP_WEBID = "webID";
 	
 	public TripDatabaseHelper(Context context)
 	{
@@ -42,6 +42,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 				+ COL_TRIP_TIME + " varchar(20), "
 				+ COL_TRIP_DATE + " varchar(20), "
 				+ COL_TRIP_LOCATION + " varchar(100), " 
+				+ COL_TRIP_WEBID + "integer, "
 				+ COL_TRIP_PARTICIPANTS + " text )";
 		db.execSQL(sql);
 	}
@@ -64,6 +65,8 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 		cv.put(COL_TRIP_TIME, trip.GetTime());
 		cv.put(COL_TRIP_LOCATION, trip.GetAddress());
 		cv.put(COL_TRIP_PARTICIPANTS, trip.GetPartici());
+		cv.put(COL_TRIP_WEBID, trip.GetWEBID());
+		
 		return getWritableDatabase().insert(TABLE_TRIP, null, cv);
 	}
 	public List<Trip> getAllTrip()
@@ -77,6 +80,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 		int data = cur.getColumnIndex(COL_TRIP_DATE);
 		int add = cur.getColumnIndex(COL_TRIP_LOCATION);
 		int participants = cur.getColumnIndex(COL_TRIP_PARTICIPANTS);
+		int id = cur.getColumnIndex(COL_TRIP_WEBID);
 		for(; !cur.isAfterLast(); cur.moveToNext())
 		{
 			Trip trip = new Trip();
@@ -86,6 +90,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 			trip.SetData(cur.getString(data));
 			trip.SetAddress(cur.getString(add));
 			trip.SetParticipant(cur.getString(participants));
+			trip.SetWebID(id);
 			tripList.add(trip);
 		}
 		return tripList;

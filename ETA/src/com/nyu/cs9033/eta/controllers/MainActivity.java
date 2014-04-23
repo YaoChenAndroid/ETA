@@ -22,7 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import JsonServer.jsonData;
+import JsonServer.tripStatus;
 
 public class MainActivity extends Activity {
 	private final static String TAG = "MainActivity";
@@ -56,7 +56,7 @@ public class MainActivity extends Activity {
     	{
     		String res;
 			try {
-				res = new jsonData().execute("3645686546").get();
+				res = new tripStatus().execute("3645686546").get();
 	    		
 	    		String[] source = res.split("\":");
 	    		String[] friends = getResArray(source[3]);
