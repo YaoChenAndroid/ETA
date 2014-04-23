@@ -1,17 +1,24 @@
 package com.nyu.cs9033.eta.controllers;
+import java.net.HttpURLConnection;
+
 import DatabaseHelper.TripDatabaseHelper; 
 
-import com.nyu.cs9033.eta.models.Trip;
 import com.nyu.cs9033.eta.R;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import JsonServer.jsonData;
+
 public class MainActivity extends Activity {
 	private final static String TAG = "MainActivity";
-	private Trip m_trip;
+	//private Trip m_trip;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,7 +44,14 @@ public class MainActivity extends Activity {
 			}
 		});
 		TripDatabaseHelper dbHelper = new TripDatabaseHelper(this);
-
+    	if(this.IsNetworkConnect())
+    	{
+    		new jsonData().execute("");
+    	}
+    	else
+    	{
+    		Log.e(TAG, "No netWork");
+    	}
 	}
 
 	/**
@@ -74,6 +88,17 @@ public class MainActivity extends Activity {
 		
 		startActivity(intent);
 	}
+    //check whether can access network.
+    private boolean IsNetworkConnect()
+    {
+    	ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
+    	if(networkInfo != null && networkInfo.isConnected()){
+    		return true;
+    	}else{
+    		return false;
+    	}
+    }
 	
 }

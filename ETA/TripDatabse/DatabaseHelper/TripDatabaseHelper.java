@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.nyu.cs9033.eta.models.Trip;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -15,6 +14,7 @@ import android.util.Log;
 
 
 public class TripDatabaseHelper extends SQLiteOpenHelper {
+	private final static String TAG = "TripDatabaseHelper";
 	private static final int DATABASE_VERSION = 1;
 	private static final String DATABASE_NAME = "trips";
 	private static final String TABLE_TRIP = "trip";
@@ -30,6 +30,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 	{
 
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		Log.i(TAG, "successful!");
 	}
 
 	@Override

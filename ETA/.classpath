@@ -6,5 +6,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="src" path="TripDatabse"/>
+	<classpathentry kind="src" path="NetServer"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
