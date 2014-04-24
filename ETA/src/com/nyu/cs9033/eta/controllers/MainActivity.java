@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -195,6 +196,7 @@ public class MainActivity extends Activity {
         	    
                 if((line = br.readLine()) != null)
                 	{
+
                 		br.close(); 
                 		return line;
                 	}
@@ -234,22 +236,30 @@ public class MainActivity extends Activity {
     	}
     	protected void onPostExecute (String res)
     	{
-    		String[] source = res.split("\":");
-    		String[] friends = getResArray(source[3]);
-    		String[] distance = getResArray(source[1]);
-    		String[] time = getResArray(source[2]);
-    		int nLen = time.length;
+//    		String[] source = res.split("\":");
+//    		String[] friends = getResArray(source[3]);
+//    		String[] distance = getResArray(source[1]);
+//    		String[] time = getResArray(source[2]);
+    		
     		String temp;
-    		
-    		
-    		for(int i = 0; i < nLen; i++) {
-    		    Map<String, String> datum = new HashMap<String, String>(2);
-    		    datum.put("title", friends[i]);
-    		    temp = "distance_left: " + distance[i] + "\ntime_left: " + time[i] + "\n";
-    		    datum.put("date", temp);
-    		    data.add(datum);
-    		}
-    		
+        	JSONObject obj;
+			try {
+				obj = new JSONObject(res);
+				JSONArray friends = (JSONArray) obj.get("people");
+				JSONArray distance = (JSONArray) obj.get("distance_left");
+				JSONArray time = (JSONArray) obj.get("time_left");
+	        	int nLen = time.length();
+	    		for(int i = 0; i < nLen; i++) {
+	    		    Map<String, String> datum = new HashMap<String, String>(2);
+	    		    datum.put("title", friends.get(i).toString());
+	    		    temp = "distance_left: " + distance.get(i).toString() + "\ntime_left: " + time.get(i).toString() + "\n";
+	    		    datum.put("date", temp);
+	    		    data.add(datum);
+	    		}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
     	}
     	
