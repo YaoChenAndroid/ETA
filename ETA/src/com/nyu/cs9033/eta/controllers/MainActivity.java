@@ -37,6 +37,8 @@ import android.widget.SimpleAdapter;
 public class MainActivity extends Activity {
 	private final static String TAG = "MainActivity";
 	private List<Map<String, String>> data;
+	private String curTripID;
+	private final int createTripCode = 100;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,24 +64,31 @@ public class MainActivity extends Activity {
 			}
 		});
 		TripDatabaseHelper dbHelper = new TripDatabaseHelper(this);
+		curTripID = "3645686546";
+		data = new ArrayList<Map<String, String>>();
+		
+		ListView listV = (ListView)findViewById(R.id.listViewCurTrip);	
+		SimpleAdapter adapter = new SimpleAdapter(this, data,
+                android.R.layout.simple_list_item_2,
+                new String[] {"title", "date"},
+                new int[] {android.R.id.text1,
+                           android.R.id.text2});
+		listV.setAdapter(adapter);
+		UpdateCurrentTrip();
+	}
+	private void UpdateCurrentTrip()
+	{
     	if(this.IsNetworkConnect())
     	{
-
-			ListView listV = (ListView)findViewById(R.id.listViewCurTrip);			
-			new tripStatus().execute("3645686546");
-			data = new ArrayList<Map<String, String>>();
-			SimpleAdapter adapter = new SimpleAdapter(this, data,
-	                android.R.layout.simple_list_item_2,
-	                new String[] {"title", "date"},
-	                new int[] {android.R.id.text1,
-	                           android.R.id.text2});
-			listV.setAdapter(adapter);
+    		
+    		new tripStatus().execute(curTripID);					
     	}
     	else
     	{
     		Log.e(TAG, "No netWork");
     	}
 	}
+
 	/**
 	 * Receive result from CreateTripActivity here.
 	 * Can be used to save instance of Trip object
@@ -98,9 +107,19 @@ public class MainActivity extends Activity {
 		// TODO - fill in here
 		Intent intent = new Intent(this, CreateTripActivity.class);
 
-		startActivity(intent);  
+		startActivityForResult(intent,createTripCode);  
 	}
-	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		switch(requestCode){
+		case createTripCode:
+			if(resultCode == RESULT_OK){
+				curTripID = String.valueOf(data.getIntExtra("trip_id", 0));
+				UpdateCurrentTrip();
+			}
+			break;
+		}
+	}
 	/**
 	 * This method should start the
 	 * Activity responsible for viewing
@@ -155,8 +174,7 @@ public class MainActivity extends Activity {
 
         	    //open
         	    Log.e(TAG, "open connection_yao");
-        	    conn.connect();
-        	    
+        	    conn.connect();      	    
 
         	} 
         	catch (MalformedURLException e) {  
@@ -236,19 +254,16 @@ public class MainActivity extends Activity {
     	}
     	protected void onPostExecute (String res)
     	{
-//    		String[] source = res.split("\":");
-//    		String[] friends = getResArray(source[3]);
-//    		String[] distance = getResArray(source[1]);
-//    		String[] time = getResArray(source[2]);
-    		
     		String temp;
         	JSONObject obj;
 			try {
+				
 				obj = new JSONObject(res);
 				JSONArray friends = (JSONArray) obj.get("people");
 				JSONArray distance = (JSONArray) obj.get("distance_left");
 				JSONArray time = (JSONArray) obj.get("time_left");
 	        	int nLen = time.length();
+	        	data.clear();
 	    		for(int i = 0; i < nLen; i++) {
 	    		    Map<String, String> datum = new HashMap<String, String>(2);
 	    		    datum.put("title", friends.get(i).toString());
@@ -256,6 +271,8 @@ public class MainActivity extends Activity {
 	    		    datum.put("date", temp);
 	    		    data.add(datum);
 	    		}
+	    		SimpleAdapter adapter = (SimpleAdapter) ((ListView)findViewById(R.id.listViewCurTrip)).getAdapter();
+	    		adapter.notifyDataSetChanged();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

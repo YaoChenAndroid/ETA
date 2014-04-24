@@ -34,7 +34,8 @@ public class tripNew extends AsyncTask<Trip, Void, Integer>{
     	    JSONObject jsonParam = new JSONObject();
     	    jsonParam.put("command", "CREATE_TRIP");
     	    jsonParam.put("location", trip.GetAddress());
-    	    jsonParam.put("datetime", trip.GetData() + trip.GetTime());
+    	    String time = trip.GetData() + trip.GetTime();
+    	    jsonParam.put("datetime", time);
     	    jsonParam.put("people", trip.GetPartici());
     	    OutputStreamWriter out = new   OutputStreamWriter(urlConnection.getOutputStream());
     	    out.write(jsonParam.toString());
@@ -44,11 +45,13 @@ public class tripNew extends AsyncTask<Trip, Void, Integer>{
     	    if(HttpResult ==HttpURLConnection.HTTP_OK){  
     	        BufferedReader br = new BufferedReader(new InputStreamReader(  
     	            urlConnection.getInputStream(),"utf-8"));  
-    	    String line = null;  
-    	    
+    	    String line = null;      	    
             if((line = br.readLine()) != null)
             	{
             		br.close(); 
+            		JSONObject obj = new JSONObject(line); 
+            		int res = obj.getInt("trip_id");
+            		return res;
             	}
 
     	    }else{  
@@ -67,7 +70,7 @@ public class tripNew extends AsyncTask<Trip, Void, Integer>{
  	       if(urlConnection!=null)  
  	    	   urlConnection.disconnect();  
  	   }
-		return null;
+		return -1;
 	}
 
 

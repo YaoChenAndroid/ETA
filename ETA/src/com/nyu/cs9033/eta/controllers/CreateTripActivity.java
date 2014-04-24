@@ -1,6 +1,12 @@
 package com.nyu.cs9033.eta.controllers;
 
+import JsonServer.tripNew;
 
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import com.nyu.cs9033.eta.controllers.MainActivity.tripStatus;
 import com.nyu.cs9033.eta.models.Trip;
 
 import DatabaseHelper.TripDatabaseHelper;
@@ -17,6 +23,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -84,11 +92,10 @@ public class CreateTripActivity extends Activity {
 				if(valid())
 				{
 					Trip temp = createTrip();
-					int ID = saveToWeb(temp);
-					temp.SetWebID(ID);
+
+					saveToWeb(temp);
 					saveTrip(temp);					
-					returnToMain();
-					///persistTrip(temp);
+					returnToMain(temp);
 				}				
 			}
 
@@ -155,9 +162,28 @@ public class CreateTripActivity extends Activity {
 		return temp;
 	}
 	//save the trip information to the web server
-	private int saveToWeb(Trip temp) {
+	private void saveToWeb(Trip temp) {
 		// TODO Auto-generated method stub
-		return 0;
+		if(IsNetworkConnect())
+    	{
+
+			int res;
+			try {
+				res = new tripNew().execute(temp).get();
+				temp.SetWebID(res);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+    	}
+    	else
+    	{
+    		Log.e(TAG, "No netWork");
+    	}
 	}
 	 //function: store a trip into the database
 	private void saveTrip(Trip temp) {
@@ -165,13 +191,12 @@ public class CreateTripActivity extends Activity {
 		 
 		dbHelper.insertTrip(temp);
 	}
-	public void returnToMain()
+	public void returnToMain(Trip temp)
 	{
+		Intent data = new Intent();
+		data.putExtra("trip_id", temp.GetWEBID());
+		setResult(RESULT_OK, data);
 		finish();
-
-		
-//		Intent intentMain = new Intent(this, MainActivity.class);
-//		startActivity(intentMain);
 	}
 	/**
 	 * For HW2 you should treat this method as a 
