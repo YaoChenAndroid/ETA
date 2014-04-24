@@ -19,7 +19,7 @@
     <string name="alert_Message">There is no trip!</string>    
     <string name="alert_Ok">OK</string>
     <string name="field_required">Please fill in this field</string>
-    <string name="cur_trip"> Current Trip Infromation:</string>
+    <string name="cur_trip"> Current Trip ID: </string>
     <color name="green">#7cd12e</color>
     <color name="gray">#938192</color>
     <color name="trans">#00000000</color>

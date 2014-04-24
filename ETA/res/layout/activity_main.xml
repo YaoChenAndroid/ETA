@@ -51,9 +51,8 @@
         android:layout_below="@+id/buttonView"
         android:layout_marginTop="22dp"
         android:ems="10"
-        android:text="@string/cur_trip" 
-        android:background="@color/back_green"
-        android:focusable="false">
+        android:focusable="false"
+        android:background="@color/back_green">
 
         <requestFocus />
     </EditText>

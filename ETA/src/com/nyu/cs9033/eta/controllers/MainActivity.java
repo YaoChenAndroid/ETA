@@ -31,8 +31,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	private final static String TAG = "MainActivity";
@@ -65,6 +67,7 @@ public class MainActivity extends Activity {
 		});
 		TripDatabaseHelper dbHelper = new TripDatabaseHelper(this);
 		curTripID = "3645686546";
+		
 		data = new ArrayList<Map<String, String>>();
 		
 		ListView listV = (ListView)findViewById(R.id.listViewCurTrip);	
@@ -75,6 +78,7 @@ public class MainActivity extends Activity {
                            android.R.id.text2});
 		listV.setAdapter(adapter);
 		UpdateCurrentTrip();
+
 	}
 	private void UpdateCurrentTrip()
 	{
@@ -273,6 +277,8 @@ public class MainActivity extends Activity {
 	    		}
 	    		SimpleAdapter adapter = (SimpleAdapter) ((ListView)findViewById(R.id.listViewCurTrip)).getAdapter();
 	    		adapter.notifyDataSetChanged();
+	    		EditText currentTrip = (EditText)findViewById(R.id.editText1);
+	    		currentTrip.setText(getResources().getString(R.string.cur_trip) + curTripID);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
