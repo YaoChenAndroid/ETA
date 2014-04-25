@@ -49,7 +49,15 @@ public class MainActivity extends Activity {
 		// TODO - fill in here	
 		Button buttonCreate = (Button) findViewById(R.id.buttonCreat);
 		Button buttonView = (Button)findViewById(R.id.buttonView);
-		
+		Button buttonAlarm = (Button)findViewById(R.id.buttonAlarm);
+		buttonAlarm.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				locationService.setServiceAlarm(v.getContext(), false);
+			}
+		});
 		buttonCreate.setOnClickListener(new View.OnClickListener() {			
 			
 			@Override
@@ -68,9 +76,9 @@ public class MainActivity extends Activity {
 		});
 		TripDatabaseHelper dbHelper = new TripDatabaseHelper(this);
 		//add alarm to update current location
-//		locationService.setServiceAlarm(this, true);
-		Intent i = new Intent(this, locationService.class);
-		startService(i);
+		locationService.setServiceAlarm(this, true);
+//		Intent i = new Intent(this, locationService.class);
+//		startService(i);
 		//intial the list view with current trip information
 		curTripID = "3645686546";
 		
@@ -129,10 +137,6 @@ public class MainActivity extends Activity {
 			}
 			break;
 		}
-	}
-	protected void onDestroy()
-	{
-		locationService.setServiceAlarm(this, true);
 	}
 	/**
 	 * This method should start the

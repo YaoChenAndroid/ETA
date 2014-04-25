@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 public class locationService extends IntentService{
 	private static final String TAG = "locationService";
-	private static final int UPDATE_INTERVAL = 1000*15;
+	private static final int UPDATE_INTERVAL = 1000*1;
 	public locationService() {
 		super(TAG);
 		// TODO Auto-generated constructor stub

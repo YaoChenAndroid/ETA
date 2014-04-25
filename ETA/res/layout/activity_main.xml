@@ -15,15 +15,6 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/buttonCreat"
-        style="@style/RoundedCornerBtnWithRightArrow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/button_create" />
-
-    <Button
         android:id="@+id/buttonView"
         style="@style/RoundedCornerBtnWithRightArrow"
         android:layout_width="match_parent"
@@ -42,6 +33,15 @@
         android:background="@color/back_green" >
     </ListView>
 
+    <Button
+        android:id="@+id/buttonCreat"
+        style="@style/RoundedCornerBtnWithRightArrow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/button_create" />
+
     <EditText
         android:id="@+id/editText1"
         android:layout_width="wrap_content"
@@ -49,12 +49,21 @@
         android:layout_alignLeft="@+id/listViewCurTrip"
         android:layout_alignRight="@+id/listViewCurTrip"
         android:layout_below="@+id/buttonView"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="27dp"
+        android:background="@color/back_green"
         android:ems="10"
-        android:focusable="false"
-        android:background="@color/back_green">
+        android:focusable="false" >
 
         <requestFocus />
     </EditText>
+
+    <Button
+        android:id="@+id/buttonAlarm"
+        style="@style/RoundedCornerBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/button_alarm" />
 
 </RelativeLayout>

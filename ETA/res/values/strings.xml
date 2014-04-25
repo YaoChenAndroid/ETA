@@ -5,6 +5,7 @@
     <string name="button_create">CreateTrip</string>
     <string name="button_view">ViewTrip</string>
     <string name="button_contact">Contact book</string>
+    <string name="button_alarm">Stop update location</string>
     <string name="text_time">Trip Time:</string>
     <string name="text_data">Trip Data:</string>
     <string name="text_location">Trip Location:</string>
