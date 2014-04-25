@@ -1,4 +1,4 @@
-package JsonServer;
+package locationServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,30 +13,61 @@ import org.json.JSONObject;
 
 import com.nyu.cs9033.eta.models.Trip;
 
-import android.os.AsyncTask;
+import android.app.AlarmManager;
+import android.app.IntentService;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.util.Log;
+import android.widget.Toast;
 
-public class tripNew extends AsyncTask<Trip, Void, Integer>{
-	private final static String TAG = "tripNew";
+public class locationService extends IntentService{
+	private static final String TAG = "locationService";
+	private static final int UPDATE_INTERVAL = 1000*15;
+	public locationService() {
+		super(TAG);
+		// TODO Auto-generated constructor stub
+	}
 	@Override
-	protected Integer doInBackground(Trip... arg0) {
+	protected void onHandleIntent(Intent intent) {
 		// TODO Auto-generated method stub
-		
-		return UpdateTrip(arg0[0]);
+		Log.i(TAG, "Update location information");
+		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		if ( locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+			Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+			UpdateLocation(lastKnowLocation);
+		}
+		else
+		{
+			Log.e(TAG, "The GPS is not on, the user's location cannot update!");
+		}
+
 	}
 
-	private Integer UpdateTrip(Trip trip) {
+	public static void setServiceAlarm(Context context,boolean isOn){
+		Intent location = new Intent(context, locationService.class);
+		PendingIntent pi = PendingIntent.getService(context, 0, location, 0);
+		AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+		if(isOn){
+			alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), UPDATE_INTERVAL, pi);
+		}else{
+			alarmManager.cancel(pi);
+			pi.cancel();
+		}
+	}
+	private void UpdateLocation(Location lastKnowLocation) {
 		// TODO Auto-generated method stub
 		HttpURLConnection urlConnection = BuildConenction();
     	try
     	{
     	    //Create JSONObject here
     	    JSONObject jsonParam = new JSONObject();
-    	    jsonParam.put("command", "CREATE_TRIP");
-    	    jsonParam.put("location", trip.GetAddress());
-    	    String time = trip.GetData() + trip.GetTime();
-    	    jsonParam.put("datetime", time);
-    	    jsonParam.put("people", trip.GetPartici());
+    	    jsonParam.put("command", "UPDATE_LOCATION");
+    	    jsonParam.put("latitude", lastKnowLocation.getLatitude());
+    	    jsonParam.put("longitude", lastKnowLocation.getLongitude());
+    	    jsonParam.put("datetime", System.currentTimeMillis());
     	    OutputStreamWriter out = new   OutputStreamWriter(urlConnection.getOutputStream());
     	    out.write(jsonParam.toString());
     	    out.close();  
@@ -50,8 +81,10 @@ public class tripNew extends AsyncTask<Trip, Void, Integer>{
             	{
             		br.close(); 
             		JSONObject obj = new JSONObject(line); 
-            		int res = obj.getInt("trip_id");
-            		return res;
+            		if(obj.getInt("response_code") != 0)
+            		{
+            			Log.e(TAG, "Update current location is not successful!");
+            		}
             	}
 
     	    }else{  
@@ -70,7 +103,6 @@ public class tripNew extends AsyncTask<Trip, Void, Integer>{
  	       if(urlConnection!=null)  
  	    	   urlConnection.disconnect();  
  	   }
-		return -1;
 	}
 
 
@@ -121,5 +153,4 @@ public class tripNew extends AsyncTask<Trip, Void, Integer>{
 
 		return conn;
     }
-
 }

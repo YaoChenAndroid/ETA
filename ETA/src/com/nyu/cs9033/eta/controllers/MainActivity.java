@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import DatabaseHelper.TripDatabaseHelper; 
+import locationServer.locationService;
 
 import com.nyu.cs9033.eta.R;
 
@@ -66,6 +67,11 @@ public class MainActivity extends Activity {
 			}
 		});
 		TripDatabaseHelper dbHelper = new TripDatabaseHelper(this);
+		//add alarm to update current location
+//		locationService.setServiceAlarm(this, true);
+		Intent i = new Intent(this, locationService.class);
+		startService(i);
+		//intial the list view with current trip information
 		curTripID = "3645686546";
 		
 		data = new ArrayList<Map<String, String>>();
@@ -124,6 +130,10 @@ public class MainActivity extends Activity {
 			break;
 		}
 	}
+	protected void onDestroy()
+	{
+		locationService.setServiceAlarm(this, true);
+	}
 	/**
 	 * This method should start the
 	 * Activity responsible for viewing
@@ -177,7 +187,7 @@ public class MainActivity extends Activity {
         	    conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
 
         	    //open
-        	    Log.e(TAG, "open connection_yao");
+        	    Log.i(TAG, "open connection_yao");
         	    conn.connect();      	    
 
         	} 
