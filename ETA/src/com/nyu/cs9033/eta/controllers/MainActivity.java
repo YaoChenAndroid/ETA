@@ -55,6 +55,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				//stop the system alarm service  manually by user.
 				locationService.setServiceAlarm(v.getContext(), false);
 			}
 		});
@@ -75,15 +76,15 @@ public class MainActivity extends Activity {
 			}
 		});
 		TripDatabaseHelper dbHelper = new TripDatabaseHelper(this);
+		dbHelper.clear();
 		//add alarm to update current location
 		locationService.setServiceAlarm(this, true);
-//		Intent i = new Intent(this, locationService.class);
-//		startService(i);
+
 		//intial the list view with current trip information
 		curTripID = "3645686546";
 		
 		data = new ArrayList<Map<String, String>>();
-		
+		//Modify UI to show current trip
 		ListView listV = (ListView)findViewById(R.id.listViewCurTrip);	
 		SimpleAdapter adapter = new SimpleAdapter(this, data,
                 android.R.layout.simple_list_item_2,
@@ -91,6 +92,7 @@ public class MainActivity extends Activity {
                 new int[] {android.R.id.text1,
                            android.R.id.text2});
 		listV.setAdapter(adapter);
+		//start the tripStatus thread
 		UpdateCurrentTrip();
 
 	}
@@ -163,6 +165,7 @@ public class MainActivity extends Activity {
     		return false;
     	}
     }
+    //Its' function is get trip information from web server and update UI
     public class tripStatus extends AsyncTask<String, Void, String>{
 
     	private final static String TAG = "jsonData";
@@ -175,7 +178,7 @@ public class MainActivity extends Activity {
         	HttpURLConnection conn=null;  
         	try {  
 
-
+        		//connect to the web server
         	    URL url = new URL(http);  
         	    conn = (HttpURLConnection) url.openConnection();
         	    
@@ -184,7 +187,6 @@ public class MainActivity extends Activity {
         	    conn.setRequestMethod("POST");
         	    conn.setDoInput(true);
         	    conn.setDoOutput(true);
-        	    //conn.setFixedLengthStreamingMode(message.getBytes().length);
 
         	    //make some HTTP header nicety
         	    conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
@@ -220,14 +222,15 @@ public class MainActivity extends Activity {
         	    JSONObject jsonParam = new JSONObject();
         	    jsonParam.put("command", "TRIP_STATUS");
         	    jsonParam.put("trip_id", tripID);
+        	    //send json object to server
         	    OutputStreamWriter out = new   OutputStreamWriter(urlConnection.getOutputStream());
         	    out.write(jsonParam.toString());
         	    out.close();  
 
         	    int HttpResult =urlConnection.getResponseCode();  
         	    if(HttpResult ==HttpURLConnection.HTTP_OK){  
-        	        BufferedReader br = new BufferedReader(new InputStreamReader(  
-        	            urlConnection.getInputStream(),"utf-8"));  
+        	    //get response from web server
+        	    BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"utf-8"));  
         	    String line = null;  
         	    
                 if((line = br.readLine()) != null)
@@ -270,12 +273,13 @@ public class MainActivity extends Activity {
     		return ReadTripInfo(urlConnection,tripID);
 
     	}
+    	//Deal with the response data and update UI
     	protected void onPostExecute (String res)
     	{
     		String temp;
         	JSONObject obj;
 			try {
-				
+				//convert the response information to a Json Object
 				obj = new JSONObject(res);
 				JSONArray friends = (JSONArray) obj.get("people");
 				JSONArray distance = (JSONArray) obj.get("distance_left");
@@ -291,7 +295,7 @@ public class MainActivity extends Activity {
 	    		}
 	    		SimpleAdapter adapter = (SimpleAdapter) ((ListView)findViewById(R.id.listViewCurTrip)).getAdapter();
 	    		adapter.notifyDataSetChanged();
-	    		EditText currentTrip = (EditText)findViewById(R.id.editText1);
+	    		TextView currentTrip = (TextView)findViewById(R.id.textView2);
 	    		currentTrip.setText(getResources().getString(R.string.cur_trip) + curTripID);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

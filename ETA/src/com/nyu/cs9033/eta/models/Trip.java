@@ -21,6 +21,7 @@ public class Trip implements Parcelable {
 	private String m_data;
 	private String m_participant;
 	private String m_tripName;
+	//add “m_WebID” member parameter to store the web trip ID for each trip.
 	private int m_WebID;
 	/**
 	 * Create a Trip model object from a Parcel

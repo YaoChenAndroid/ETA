@@ -28,6 +28,7 @@ import android.widget.SimpleAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.widget.EditText;
 import android.view.animation.Animation;
 
@@ -46,7 +47,6 @@ public class CreateTripActivity extends Activity {
 		// TODO - fill in here
 		//open database
 		dbHelper = new TripDatabaseHelper(this);
-
 		// function : google map
 		//get the information from google map. and set the google map information in this Activity.
 		//modify the Manifast so that this Activity can accepts the intent from Google Maps.
@@ -164,6 +164,7 @@ public class CreateTripActivity extends Activity {
 	//save the trip information to the web server
 	private void saveToWeb(Trip temp) {
 		// TODO Auto-generated method stub
+		//check the network connection and start TripNew thread.
 		if(IsNetworkConnect())
     	{
 
@@ -189,7 +190,8 @@ public class CreateTripActivity extends Activity {
 	private void saveTrip(Trip temp) {
 		// TODO Auto-generated method stub
 		 
-		dbHelper.insertTrip(temp);
+		if(dbHelper.insertTrip(temp) == -1)
+			Log.e(TAG, "insert database error!");
 	}
 	public void returnToMain(Trip temp)
 	{
@@ -301,5 +303,5 @@ public class CreateTripActivity extends Activity {
     		return false;
     	}
     }
-  
+
 }

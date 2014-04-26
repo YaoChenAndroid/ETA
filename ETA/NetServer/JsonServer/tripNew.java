@@ -15,7 +15,7 @@ import com.nyu.cs9033.eta.models.Trip;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
+// It is used to upload the new trip to the web server and get ID of the new trip
 public class tripNew extends AsyncTask<Trip, Void, Integer>{
 	private final static String TAG = "tripNew";
 	@Override
@@ -24,7 +24,7 @@ public class tripNew extends AsyncTask<Trip, Void, Integer>{
 		
 		return UpdateTrip(arg0[0]);
 	}
-
+	//upload trip to the web server
 	private Integer UpdateTrip(Trip trip) {
 		// TODO Auto-generated method stub
 		HttpURLConnection urlConnection = BuildConenction();
@@ -40,7 +40,7 @@ public class tripNew extends AsyncTask<Trip, Void, Integer>{
     	    OutputStreamWriter out = new   OutputStreamWriter(urlConnection.getOutputStream());
     	    out.write(jsonParam.toString());
     	    out.close();  
-
+    	    //get the web server response and extract trip ID information
     	    int HttpResult =urlConnection.getResponseCode();  
     	    if(HttpResult ==HttpURLConnection.HTTP_OK){  
     	        BufferedReader br = new BufferedReader(new InputStreamReader(  
@@ -74,7 +74,7 @@ public class tripNew extends AsyncTask<Trip, Void, Integer>{
 	}
 
 
-
+	//build the connection to the web server
     private HttpURLConnection BuildConenction()
     {
     	String http = "http://cs9033-homework.appspot.com/";  

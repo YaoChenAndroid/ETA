@@ -15,7 +15,7 @@ import android.util.Log;
 
 public class TripDatabaseHelper extends SQLiteOpenHelper {
 	private final static String TAG = "TripDatabaseHelper";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	private static final String DATABASE_NAME = "trips";
 	private static final String TABLE_TRIP = "trip";
 	private static final String COL_TRIP_ID = "_id";
@@ -24,6 +24,7 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 	private static final String COL_TRIP_LOCATION = "location";
 	private static final String COL_TRIP_PARTICIPANTS = "participants";
 	private static final String COL_TRIP_NAME = "name";
+	//add the “webID” attribute to the trip table to store the trip ID from the web server
 	private static final String COL_TRIP_WEBID = "webID";
 	
 	public TripDatabaseHelper(Context context)
@@ -42,18 +43,23 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 				+ COL_TRIP_TIME + " varchar(20), "
 				+ COL_TRIP_DATE + " varchar(20), "
 				+ COL_TRIP_LOCATION + " varchar(100), " 
-				+ COL_TRIP_WEBID + "integer, "
+				+ COL_TRIP_WEBID + " integer, "
 				+ COL_TRIP_PARTICIPANTS + " text )";
 		db.execSQL(sql);
 	}
-
+	public void clear()
+	{
+		   SQLiteDatabase database = getWritableDatabase();
+		   database.execSQL("DROP TABLE IF EXISTS " + "trip");
+		   onCreate(database);
+	}
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
 		// TODO Auto-generated method stub
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_TRIP);
 		onCreate(db);
 	}
-	
+
 
 	
 
@@ -62,11 +68,12 @@ public class TripDatabaseHelper extends SQLiteOpenHelper {
 		ContentValues cv = new ContentValues();
 		cv.put(COL_TRIP_NAME, trip.GetName());
 		cv.put(COL_TRIP_DATE, trip.GetData());
+		cv.put(COL_TRIP_WEBID, trip.GetWEBID());
 		cv.put(COL_TRIP_TIME, trip.GetTime());
 		cv.put(COL_TRIP_LOCATION, trip.GetAddress());
 		cv.put(COL_TRIP_PARTICIPANTS, trip.GetPartici());
-		cv.put(COL_TRIP_WEBID, trip.GetWEBID());
-		
+
+		Log.i(TAG, "CurrentView: " + String.valueOf(getWritableDatabase().getVersion()));
 		return getWritableDatabase().insert(TABLE_TRIP, null, cv);
 	}
 	public List<Trip> getAllTrip()
